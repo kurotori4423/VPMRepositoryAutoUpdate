@@ -1,6 +1,6 @@
 {
     "packages": {
-        "net.rs64.textranstool": {
+        "net.rs64.tex-trans-tool": {
             "versions": {
                 "0.2.0-VPM-Support-Test": {
                     "name": "net.rs64.tex-trans-tool",
