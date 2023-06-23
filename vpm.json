@@ -1,31 +1,50 @@
 {
-    "packages": {
-        "net.rs64.tex-trans-tool": {
-            "versions": {
-                "0.2.0": {
-                    "name": "net.rs64.tex-trans-tool",
-                    "displayName": "TexTransTool",
-                    "version": "0.2.0",
-                    "unity": "2019.4",
-                    "description": "TextureTransformTool!",
-                    "author": {
-                      "name": "ReinaSakiria",
-                      "url": "https://rs64.net/"
-                    },
-                    "url": "https://github.com/ReinaS-64892/TexTransTool/releases/download/v0.2.0/tex-trans-tool-0.2.0.zip",
-                    "repo": "https://vpm.rs64.net/vpm.json",
-                    "vpmDependencies": {
-                      "com.vrchat.avatars": ">=3.1.13"
-                    },
-                    "legacyFolders" : {
-                      "Packages\\rs64.tex-trans-tool" : ""
-                    }
-                  }
-            }
+  "packages": {
+    "net.rs64.tex-trans-tool": {
+      "versions": {
+        "0.2.0": {
+          "name": "net.rs64.tex-trans-tool",
+          "displayName": "TexTransTool",
+          "version": "0.2.0",
+          "unity": "2019.4",
+          "description": "TextureTransformTool!",
+          "author": {
+            "name": "ReinaSakiria",
+            "url": "https://rs64.net/"
+          },
+          "url": "https://github.com/ReinaS-64892/TexTransTool/releases/download/v0.2.0/tex-trans-tool-0.2.0.zip",
+          "repo": "https://vpm.rs64.net/vpm.json",
+          "vpmDependencies": {
+            "com.vrchat.avatars": ">=3.1.13"
+          },
+          "legacyFolders": {
+            "Packages\\rs64.tex-trans-tool": ""
+          }
+        },
+        "0.2.1": {
+          "name": "net.rs64.tex-trans-tool",
+          "displayName": "TexTransTool",
+          "version": "0.2.1",
+          "unity": "2019.4",
+          "description": "TextureTransformTool!",
+          "author": {
+            "name": "ReinaSakiria",
+            "url": "https://rs64.net/"
+          },
+          "url": "https://github.com/ReinaS-64892/TexTransTool/releases/download/v0.2.1/tex-trans-tool-0.2.1.zip",
+          "repo": "https://vpm.rs64.net/vpm.json",
+          "vpmDependencies": {
+            "com.vrchat.avatars": ">=3.1.13"
+          },
+          "legacyFolders": {
+            "Packages\\rs64.tex-trans-tool": ""
+          }
         }
-    },
-    "author": "ReinaSakiria",
-    "name": "ReinaS-vpm-repos",
-    "id": "net.rs64.vpm",
-    "url": "https://vpm.rs64.net/vpm.json"
+      }
+    }
+  },
+  "author": "ReinaSakiria",
+  "name": "ReinaS-vpm-repos",
+  "id": "net.rs64.vpm",
+  "url": "https://vpm.rs64.net/vpm.json"
 }
