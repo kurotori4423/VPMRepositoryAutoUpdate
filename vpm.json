@@ -2,7 +2,7 @@
   "packages": {
     "net.rs64.tex-trans-tool": {
       "versions": {
-        "v0.4.0-rc.1"{
+        "v0.4.0-rc.1":{
           "name": "net.rs64.tex-trans-tool",
           "displayName": "TexTransTool",
           "version": "v0.4.0-rc.1",
