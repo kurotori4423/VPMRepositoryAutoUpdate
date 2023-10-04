@@ -6,7 +6,6 @@ on:
         type: string
         required: true
 
-
 jobs:
   add-ttt-new-version:
     runs-on: ubuntu-latest
@@ -19,34 +18,116 @@ jobs:
         with:
           repo: ReinaS-64892/TexTransTool
           tag: ${{ github.event.inputs.tag }}
+
       - name: Debug
         run: |
           pwd
           ls -alh
-          cat  ${{ steps.RereaseData.outputs.assets }}
+      - name: Get TTTZipURL
+        id: TTTZipURL
+        uses: actions/github-script@v6
+        env:
+          InputStr: ${{ steps.RereaseData.outputs.assets }}
+        with:
+          script: |
+            const {InputStr } = process.env
+
+            let TTTZipURL = null;
+
+            for (const asset of JSON.parse(InputStr))
+            {
+              if (asset.name.startsWith("tex-trans-tool-"))
+              {
+                TTTZipURL = asset.browser_download_url
+              }
+            }
+
+            return TTTZipURL
+
       - name: GetPackege.json
-        run: wget ${{ steps.RereaseData.outputs.assets }}
+        uses: actions/checkout@v4
+        with:
+          repository: ReinaS-64892/TexTransTool
+          path: ./TTT
+          ref: ${{ github.event.inputs.tag }}
+          sparse-checkout: |
+            package.json
+
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
           path: ./VpmRepo
       - name: Debug
         run: |
+          echo ${{ steps.TTTZipURL.outputs.result }}
           pwd
           ls -alh
-      # - name: replace version
-      #   run: |
-      #    cd ./VpmRepo
-      #    tempjson='mktemp'
-      #    withoutvtagstr=`echo ${{ github.event.inputs.tag }} | sed -e "s/^v//"`
-      #    jq ".version|=\"${withoutvtagstr}\"" ./package.json > $tempjson
-      #    mv $tempjson ./package.json
-      # - name: git commit
-      #   run: |
-      #     git config user.name  "GitHub Action"
-      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      #     git add ./vpm.json
-      #     git commit -m "Add TTT New Version ${{ github.event.inputs.tag }}!!"
-      #     git tag ${{ github.event.inputs.tag }}
-      #     git push
-      #     git push origin ${{ github.event.inputs.tag }}
+          ls -alh ./TTT
+          ls -alh ./VpmRepo
+
+      - name: moveVar
+        id: packagedotjson
+        run: |
+          Temp=`cat ./TTT/package.json`
+          echo 'result=' $Temp >> "$GITHUB_OUTPUT"
+
+      - name: moveVar
+        id: vpmdotjson
+        run: |
+          Temp=`cat ./VpmRepo/vpm.json`
+          echo 'result=' $Temp >> "$GITHUB_OUTPUT"
+
+      - name: GenereateURLReplasedJson
+        id: NewJson
+        uses: actions/github-script@v6
+        env:
+          InputStr: ${{ steps.packagedotjson.outputs.result }}
+          ReplaseURL: ${{ steps.TTTZipURL.outputs.result }}
+        with:
+          result-encoding: string
+          script: |
+            const {InputStr ,ReplaseURL } = process.env
+
+            let jsonObj = JSON.parse(InputStr);
+
+            var subStr = ReplaseURL.substring(1, ReplaseURL.length - 1)
+
+            console.log(subStr)
+
+            jsonObj.url = subStr;
+
+            return JSON.stringify(jsonObj)
+
+      - name: GenereateURLReplasedJson
+        id: AddVersion
+        uses: actions/github-script@v6
+        env:
+          InputStr: ${{ steps.vpmdotjson.outputs.result }}
+          AddVersion: ${{ steps.NewJson.outputs.result }}
+        with:
+          script: |
+            const {InputStr ,AddVersion} = process.env
+
+            let jsonObj = JSON.parse(InputStr);
+            let addJsonObj = JSON.parse(AddVersion);
+
+            jsonObj.packages["net.rs64.tex-trans-tool"].versions[addJsonObj.version] = addJsonObj
+
+            return JSON.stringify(jsonObj)
+
+      - name: Write Json
+        run: |
+          rm  ./VpmRepo/vpm.json
+          echo ${{ steps.AddVersion.outputs.result}}  >>  ./VpmRepo/vpm.json
+      - name: Debug
+        run: |
+          cat ./VpmRepo/vpm.json
+
+      - name: git commit
+        run: |
+          cd ./VpmRepo
+          git config user.name  "GitHub Action"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ./vpm.json
+          git commit -m "Add TTT New Version ${{ github.event.inputs.tag }}!!"
+          git push origin
