@@ -28,20 +28,24 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
-          paht: ./VpmRepo
-      - name: replace version
+          path: ./VpmRepo
+      - name: Debug
         run: |
-         cd ./VpmRepo
-         tempjson='mktemp'
-         withoutvtagstr=`echo ${{ github.event.inputs.tag }} | sed -e "s/^v//"`
-         jq ".version|=\"${withoutvtagstr}\"" ./package.json > $tempjson
-         mv $tempjson ./package.json
-      - name: git commit
-        run: |
-          git config user.name  "GitHub Action"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ./vpm.json
-          git commit -m "Add TTT New Version ${{ github.event.inputs.tag }}!!"
-          git tag ${{ github.event.inputs.tag }}
-          git push
-          git push origin ${{ github.event.inputs.tag }}
+          pwd
+          ls -alh
+      # - name: replace version
+      #   run: |
+      #    cd ./VpmRepo
+      #    tempjson='mktemp'
+      #    withoutvtagstr=`echo ${{ github.event.inputs.tag }} | sed -e "s/^v//"`
+      #    jq ".version|=\"${withoutvtagstr}\"" ./package.json > $tempjson
+      #    mv $tempjson ./package.json
+      # - name: git commit
+      #   run: |
+      #     git config user.name  "GitHub Action"
+      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      #     git add ./vpm.json
+      #     git commit -m "Add TTT New Version ${{ github.event.inputs.tag }}!!"
+      #     git tag ${{ github.event.inputs.tag }}
+      #     git push
+      #     git push origin ${{ github.event.inputs.tag }}
