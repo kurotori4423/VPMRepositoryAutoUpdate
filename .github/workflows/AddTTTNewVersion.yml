@@ -109,7 +109,7 @@ jobs:
             let jsonObj = JSON.parse(InputStr);
             let addJsonObj = JSON.parse(AddVersion);
 
-            jsonObj.packages["net.rs64.tex-trans-tool"].versions[addJsonObj.version] = addJsonObj;
+            jsonObj.packages[addJsonObj.name].versions[addJsonObj.version] = addJsonObj;
 
             return JSON.stringify(jsonObj);
 
