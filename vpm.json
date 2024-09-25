@@ -1879,7 +1879,9 @@
 				}
 			}
 		},
-		"net.rs64.ttt-destructive-texture-utilities": {}
+		"net.rs64.ttt-destructive-texture-utilities": {
+			"versions": {}
+		}
 	},
 	"author": "ReinaSakiria",
 	"name": "ReinaS-vpm-repos",
