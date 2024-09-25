@@ -1,0 +1,14 @@
+name: add-ttt-du-new-version
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        required: true
+
+jobs:
+  add-ttt-du-new-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: NotImpl
+        run: cat "NYA!"
