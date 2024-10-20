@@ -29,7 +29,7 @@ jobs:
 
             for (const asset of JSON.parse(InputStr))
             {
-              if (asset.name.startsWith("net.rs64.ttt-world-extension-"))
+              if (asset.name.startsWith("ttt-world-extension-"))
               {
                 return asset.browser_download_url;
               }
@@ -119,4 +119,3 @@ jobs:
           git add ./vpm.json
           git commit -m "Add TTT-WorldExtension New Version ${{ github.event.inputs.tag }}!!"
           git push origin
-         
