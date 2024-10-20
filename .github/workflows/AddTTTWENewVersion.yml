@@ -18,7 +18,6 @@ jobs:
         with:
           repo: ReinaS-64892/TTT-WorldExtension
           tag: ${{ github.event.inputs.tag }}
-
       - name: Get ZipURL
         id: ZipURL
         uses: actions/github-script@v7
@@ -120,3 +119,4 @@ jobs:
           git add ./vpm.json
           git commit -m "Add TTT-WorldExtension New Version ${{ github.event.inputs.tag }}!!"
           git push origin
+         
