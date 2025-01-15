@@ -1,0 +1,32 @@
+name: add-new-version
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'repository choice'
+        required: true
+        default: 'TexTransTool'
+        type: choice
+        options:
+          - TexTransTool
+          - TTT-DestructiveTextureUtilities
+          - TTT-WorldExtension
+      tag:
+        type: string
+        required: true
+        description: 'version tag string'
+
+jobs:
+  add-new-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          path: ./VpmRepo
+
+      - name: MoveToVar
+        id: VPMRepoJson
+        run: |
+          Temp=`cat ./VpmRepo/vpm.json`
+          echo 'result=' $Temp >> "$GITHUB_OUTPUT"
