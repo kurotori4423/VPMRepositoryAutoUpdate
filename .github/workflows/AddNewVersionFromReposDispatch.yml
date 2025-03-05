@@ -1,6 +1,7 @@
+name: Add-New-Version-From-Repos-Dispatch
 on:
-    repository_dispatch:
-      types: [add_new_version]
+  repository_dispatch:
+    types: [add_new_version]
 
 jobs:
   Add-New-Version-From-Repos-Dispatch:
