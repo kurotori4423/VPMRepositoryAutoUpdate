@@ -5,7 +5,7 @@ on:
 
 jobs:
   Add-New-Version-From-Repos-Dispatch:
-    uses: ./.github/wokflows/AddNewVersion.yml
+    uses: ./.github/workflows/AddNewVersion.yml
     with:
       repository: ${{ github.event.client_payload.repository }}
       tag: ${{ github.event.client_payload.tag }}
