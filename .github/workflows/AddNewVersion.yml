@@ -1,5 +1,16 @@
 name: add-new-version
 on:
+  workflow_call:
+    inputs:
+      repository:
+        description: 'repository choice'
+        required: true
+        default: 'TexTransTool'
+        type: string
+      tag:
+        type: string
+        required: true
+        description: 'version tag string'
   workflow_dispatch:
     inputs:
       repository:
@@ -9,6 +20,7 @@ on:
         type: choice
         options:
           - TexTransTool
+          - TexTransCore
           - TTT-DestructiveTextureUtilities
           - TTT-WorldExtension
       tag:
@@ -37,15 +49,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          repo: ReinaS-64892/${{ github.event.inputs.repository }}
-          tag: ${{ github.event.inputs.tag }}
+          repo: ReinaS-64892/${{ inputs.repository }}
+          tag: ${{ inputs.tag }}
 
       - name: Get ZipURL
         id: ZipURL
         uses: actions/github-script@v7
         env:
           Assets: ${{ steps.ReleaseData.outputs.assets }}
-          Tag: ${{ github.event.inputs.tag }}
+          Tag: ${{ inputs.tag }}
         with:
           result-encoding: string
           script: |
@@ -107,8 +119,8 @@ jobs:
 
       - name: git commit
         env:
-          REPO: ${{ github.event.inputs.repository }}
-          TAG: ${{ github.event.inputs.tag }}
+          REPO: ${{ inputs.repository }}
+          TAG: ${{ inputs.tag }}
         run: |
           git config user.name  "GitHub Action"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
