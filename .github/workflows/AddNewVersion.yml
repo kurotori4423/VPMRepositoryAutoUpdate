@@ -23,6 +23,7 @@ on:
           - TexTransCore
           - TTT-DestructiveTextureUtilities
           - TTT-WorldExtension
+          - ReinaS-lilToonNDMFUtility
       tag:
         type: string
         required: true
