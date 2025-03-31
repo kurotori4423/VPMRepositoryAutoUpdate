@@ -2754,9 +2754,25 @@
         }
       }
     },
-    "net.rs64.reina-s-liltoon-ndmf-utility":{
+    "net.rs64.reina-s-liltoon-ndmf-utility": {
       "versions": {
-
+        "1.0.0-rc.0": {
+          "name": "net.rs64.reina-s-liltoon-ndmf-utility",
+          "displayName": "ReinaSakiria-s lilToon NDMF Utility",
+          "version": "1.0.0-rc.0",
+          "unity": "2022.3",
+          "description": "NDMF Utility for liToon",
+          "author": {
+            "name": "ReinaSakiria",
+            "url": "https://rs64.net/"
+          },
+          "url": "https://github.com/ReinaS-64892/ReinaS-lilToonNDMFUtility/releases/download/v1.0.0-rc.0/reina-s-liltoon-ndmf-utility-v1.0.0-rc.0.zip",
+          "repo": "https://vpm.rs64.net/vpm.json",
+          "vpmDependencies": {
+            "nadena.dev.ndmf": "^1.6.0",
+            "jp.lilxyzw.liltoon": "^1.8.5"
+          }
+        }
       }
     }
   },
