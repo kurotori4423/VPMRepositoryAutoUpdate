@@ -24,6 +24,7 @@ on:
           - TTT-DestructiveTextureUtilities
           - TTT-WorldExtension
           - ReinaS-lilToonNDMFUtility
+          - TTCE-Wgpu
       tag:
         type: string
         required: true
