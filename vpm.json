@@ -3351,6 +3351,25 @@
           "vpmDependencies": {
             "net.rs64.tex-trans-core": "^0.1.0"
           }
+        },
+        "0.2.0": {
+          "name": "net.rs64.ttce-wgpu",
+          "displayName": "TTCE-Wgpu",
+          "version": "0.2.0",
+          "unity": "2022.3",
+          "description": "The TexTransTool Wgpu BackEnd!",
+          "author": {
+            "name": "ReinaSakiria",
+            "url": "https://rs64.net/"
+          },
+          "url": "https://github.com/ReinaS-64892/TTCE-Wgpu/releases/download/v0.2.0/ttce-wgpu-v0.2.0.zip",
+          "repo": "https://vpm.rs64.net/vpm.json",
+          "dependencies": {
+            "net.rs64.tex-trans-core": "0.2.0"
+          },
+          "vpmDependencies": {
+            "net.rs64.tex-trans-core": "^0.2.0"
+          }
         }
       }
     }
