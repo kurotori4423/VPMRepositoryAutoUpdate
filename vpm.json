@@ -3217,6 +3217,23 @@
           "vpmDependencies": {
             "net.rs64.tex-trans-tool": "0.9.3"
           }
+        },
+        "0.2.0": {
+          "name": "net.rs64.ttt-destructive-texture-utilities",
+          "version": "0.2.0",
+          "displayName": "TTT-DestructiveTextureUtilities",
+          "unity": "2022.3",
+          "author": {
+            "name": "ReinaSakiria",
+            "url": "https://rs64.net/"
+          },
+          "url": "https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities/releases/download/v0.2.0/ttt-destructive-texture-utilities-v0.2.0.zip",
+          "dependencies": {
+            "net.rs64.tex-trans-tool": "1.0.0"
+          },
+          "vpmDependencies": {
+            "net.rs64.tex-trans-tool": "^1.0.0"
+          }
         }
       }
     },
