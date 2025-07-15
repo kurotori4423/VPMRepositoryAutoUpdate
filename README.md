@@ -66,7 +66,24 @@ git push origin main
 
 これだけで準備完了！新しいパッケージは自動的に追加されます。
 
-### 6. パッケージリポジトリでのディスパッチワークフロー設定（オプション）
+### 6. add-repo.htmlの更新
+
+VRChat Creator Companion (VCC) でワンクリックリポジトリ追加を可能にするため、`add-repo.html`のURLを更新：
+
+```html
+<!-- 変更前 -->
+<meta http-equiv="refresh" content="0;URL='vcc://vpm/addRepo?url=https%3A%2F%2Fyour-username.github.io%2Fyour-repo-name%2Fvpm.json'" />
+
+<!-- 変更後（実際のURLに置き換え） -->
+<meta http-equiv="refresh" content="0;URL='vcc://vpm/addRepo?url=https%3A%2F%2Factual-username.github.io%2Factual-repo-name%2Fvpm.json'" />
+```
+
+同様にリトライリンクも更新してください：
+```html
+<a href="vcc://vpm/addRepo?url=https%3A%2F%2Factual-username.github.io%2Factual-repo-name%2Fvpm.json">リトライ</a>
+```
+
+### 7. パッケージリポジトリでのディスパッチワークフロー設定（オプション）
 
 パッケージのリリース時に自動的にVPMリポジトリに追加したい場合は、以下のテンプレートリポジトリからディスパッチワークフローを設定できます：
 
@@ -185,3 +202,4 @@ options:
 - **自動更新**: 設定ファイルを編集すると、実際のパッケージ名に自動更新されます
 - **権限**: GitHub Actionsがワークフローファイルを更新できるよう、適切な権限設定が必要です
 - **Pages設定**: GitHub Pagesが有効になっていないとvpm.jsonにアクセスできません
+- **add-repo.html**: フォーク後は`add-repo.html`のURLを実際のGitHub PagesのURLに変更してください
