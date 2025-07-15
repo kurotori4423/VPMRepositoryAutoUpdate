@@ -5,7 +5,7 @@ on:
       repository:
         description: 'repository choice'
         required: true
-        default: 'TexTransTool'
+        default: 'placeholder-package'
         type: string
       tag:
         type: string
@@ -21,15 +21,10 @@ on:
       repository:
         description: 'repository choice'
         required: true
-        default: 'TexTransTool'
+        default: 'placeholder-package'
         type: choice
         options:
-          - TexTransTool
-          - TexTransCore
-          - TTT-DestructiveTextureUtilities
-          - TTT-WorldExtension
-          - ReinaS-lilToonNDMFUtility
-          - TTCE-Wgpu
+          - placeholder-package  # この値は repositories.yml 設定後に自動更新されます
       tag:
         type: string
         required: true
@@ -41,7 +36,7 @@ on:
         default: ''
 
 env:
-  DEFAULT_REPO_OWNER: 'kurotori4423'
+  DEFAULT_REPO_OWNER: 'your-github-username'
 
 jobs:
   add-new-version:

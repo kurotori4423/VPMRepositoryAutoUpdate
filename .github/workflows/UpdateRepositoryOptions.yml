@@ -12,8 +12,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
         
-      - name: Install js-yaml
-        run: npm install js-yaml
+      - name: Install dependencies
+        run: |
+          npm install js-yaml
+          pip install pyyaml
 
       - name: Get Repository Options
         id: GetOptions
@@ -25,12 +27,44 @@ jobs:
             const repositories = mod.getRepositoryOptions();
             return repositories.join('\n          - ');
 
-      - name: Update Workflow File
+      - name: Update AddNewVersion.yml
         env:
           REPO_OPTIONS: ${{ steps.GetOptions.outputs.result }}
         run: |
-          # AddNewVersion.ymlファイルのオプション部分を更新
-          # この処理は手動で行うか、より高度なスクリプトで実装可能
-          echo "利用可能なリポジトリ:"
-          echo "$REPO_OPTIONS"
-          echo "手動でAddNewVersion.ymlのoptionsセクションを更新してください"
+          # Python script to update the workflow file
+          python3 << 'EOF'
+          import re
+          import sys
+          
+          # Read the workflow file
+          with open('.github/workflows/AddNewVersion.yml', 'r') as f:
+              content = f.read()
+          
+          # Get the new options from environment
+          new_options = "${{ steps.GetOptions.outputs.result }}"
+          formatted_options = "          - " + new_options.replace('\n          - ', '\n          - ')
+          
+          # Replace the options section
+          pattern = r'(options:\s*\n)((?:\s*-\s*[^\n]+\n?)*)'
+          replacement = f'\\1{formatted_options}\n'
+          
+          updated_content = re.sub(pattern, replacement, content)
+          
+          # Write back the file
+          with open('.github/workflows/AddNewVersion.yml', 'w') as f:
+              f.write(updated_content)
+          
+          print("AddNewVersion.yml has been updated successfully!")
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/AddNewVersion.yml
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update workflow options from repositories.yml"
+            git push origin
+          fi

@@ -1,6 +1,7 @@
-# VPM Repository Auto-Update System
+# VPM Repository Auto-Update
 
-VRChatのパッケージ管理システム（VPM）用の自動更新システムです。GitHub Actionsを使用して、指定されたリポジトリのリリースから自動的にvpm.jsonを更新します。
+ReinaS-64892氏のリポジトリからフォークして作成した、VRChatのパッケージ管理システム（VPM）用の自動更新システムです。
+GitHub Actionsを使用して、指定されたリポジトリのリリースから自動的にvpm.jsonを更新します。
 
 ## 特徴
 
@@ -28,7 +29,7 @@ repositories:
   - name: "your-package-2"
 
 vpm_settings:
-  repo_url: "https://your-username.github.io/vpm.json"
+  repo_url: "https://your-username.github.io/your-repo-name/vpm.json"
   name: "Your VPM Repository"
   description: "あなたのVRChat用パッケージリポジトリ"
 ```
@@ -39,40 +40,46 @@ vpm_settings:
 2. Source を "GitHub Actions" に設定
 3. vpm.jsonが`https://your-username.github.io/your-repo-name/vpm.json`でアクセス可能になります
 
-### 4. 初期のvpm.jsonの作成
+### 4. ワークフローオプションの自動更新
 
-最小限のvpm.jsonファイルを作成：
+設定ファイル（`.github/config/repositories.yml`）を編集してコミット・プッシュすると、`UpdateRepositoryOptions.yml`が自動実行され、`AddNewVersion.yml`のリポジトリ選択肢が自動更新されます。
 
-```json
-{
-  "packages": {}
-}
-```
-
-**または**提供されているテンプレートをコピー：
-
-```bash
-cp vpm.template.json vpm.json
-```
+**初期状態では**`AddNewVersion.yml`に`placeholder-package`が設定されていますが、設定ファイルを編集すると実際のパッケージ名に自動更新されます。
 
 これだけで準備完了！新しいパッケージは自動的に追加されます。
 
 ## 使用方法
 
-### 手動実行
+### 新しいパッケージの追加手順
+
+#### 1. 設定ファイルに追加（推奨）
+
+`.github/config/repositories.yml`を編集：
+
+```yaml
+repositories:
+  - name: "existing-package-1"
+  - name: "existing-package-2"
+  - name: "new-package"  # 新しく追加
+```
+
+コミット・プッシュすると、`AddNewVersion.yml`のオプションが自動更新されます。
+
+#### 2. 手動実行
 
 1. GitHub Actionsタブに移動
 2. "add-new-version"ワークフローを選択
 3. "Run workflow"をクリック
-4. リポジトリ名とタグを入力して実行
+4. 更新されたリポジトリ選択肢からパッケージを選択
+5. タグを入力して実行
 
 ### API経由での実行
 
 ```bash
-curl -X POST \\
-  -H "Accept: application/vnd.github.v3+json" \\
-  -H "Authorization: token YOUR_GITHUB_TOKEN" \\
-  https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/dispatches \\
+curl -X POST \
+  -H "Accept: application/vnd.github.v3+json" \
+  -H "Authorization: token YOUR_GITHUB_TOKEN" \
+  https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/dispatches \
   -d '{
     "event_type": "add_new_version",
     "client_payload": {
@@ -94,7 +101,36 @@ https://your-username.github.io/your-repo-name/vpm.json
 
 - **AddNewVersion.yml**: メインのパッケージ追加ワークフロー
 - **AddNewVersionFromReposDispatch.yml**: Repository Dispatch イベント用
-- **UpdateRepositoryOptions.yml**: 設定更新用（将来の拡張）
+- **UpdateRepositoryOptions.yml**: 設定ファイル変更時の自動ワークフロー更新
+
+### UpdateRepositoryOptions.ymlの動作
+
+このワークフローは以下のタイミングで自動実行されます：
+
+1. **手動実行**: GitHub ActionsタブからWorkflowを手動実行
+2. **自動実行**: `.github/config/repositories.yml`をコミット・プッシュした時
+
+**実行内容：**
+- 設定ファイルからリポジトリリストを読み込み
+- `AddNewVersion.yml`の`options`セクションを自動更新
+- 変更があれば自動コミット・プッシュ
+
+**例：**
+```yaml
+# repositories.yml に以下を設定
+repositories:
+  - name: "MyPackage1" 
+  - name: "MyPackage2"
+```
+
+↓ 自動更新後
+
+```yaml
+# AddNewVersion.yml の options が以下に更新される
+options:
+  - MyPackage1
+  - MyPackage2
+```
 
 ## カスタマイズ
 
@@ -113,3 +149,55 @@ MIT License
 ## 貢献
 
 Issue や Pull Request を歓迎します！
+
+## フォーク後のセットアップ詳細
+
+### 完全なセットアップ例
+
+1. **リポジトリをフォーク**
+   - 右上の "Fork" ボタンをクリック
+
+2. **リポジトリをクローン**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/FORKED_REPO_NAME.git
+   cd FORKED_REPO_NAME
+   ```
+
+3. **設定ファイルを編集**
+   ```yaml
+   # .github/config/repositories.yml
+   default_owner: "your-actual-username"
+   
+   repositories:
+     - name: "your-real-package-1"
+     - name: "your-real-package-2"
+   
+   vpm_settings:
+     repo_url: "https://your-actual-username.github.io/FORKED_REPO_NAME/vpm.json"
+     name: "Your Actual VPM Repository Name"
+     description: "あなたの実際のパッケージリポジトリの説明"
+   ```
+
+4. **初期コミット**
+   ```bash
+   git add .github/config/repositories.yml
+   git commit -m "Update repository configuration"
+   git push origin main
+   ```
+
+5. **自動更新の確認**
+   - GitHub Actionsタブで `UpdateRepositoryOptions.yml` の実行を確認
+   - `AddNewVersion.yml` のオプションが更新されることを確認
+
+6. **GitHub Pages設定**
+   - Settings → Pages → Source を "GitHub Actions" に設定
+
+7. **初回パッケージ追加**
+   - Actions → "add-new-version" → "Run workflow"
+   - 更新されたリポジトリ選択肢から選択して実行
+
+### 注意事項
+
+- **初期状態**: `AddNewVersion.yml`には`placeholder-package`が設定されています
+- **自動更新**: 設定ファイルを編集すると、実際のパッケージ名に自動更新されます
+- **権限**: GitHub Actionsがワークフローファイルを更新できるよう、適切な権限設定が必要です
