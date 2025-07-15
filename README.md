@@ -14,7 +14,14 @@ GitHub Actionsを使用して、指定されたリポジトリのリリースか
 
 ## セットアップ
 
-### 1. このリポジトリをフォーク/クローン
+### 1. リポジトリをフォーク/クローン
+
+- 右上の "Fork" ボタンをクリック
+- フォークしたリポジトリをローカルにクローン：
+  ```bash
+  git clone https://github.com/YOUR_USERNAME/FORKED_REPO_NAME.git
+  cd FORKED_REPO_NAME
+  ```
 
 ### 2. 設定ファイルの編集
 
@@ -40,11 +47,21 @@ vpm_settings:
 2. Source を "GitHub Actions" に設定
 3. vpm.jsonが`https://your-username.github.io/your-repo-name/vpm.json`でアクセス可能になります
 
-### 4. ワークフローオプションの自動更新
+### 4. 設定をコミット・プッシュ
 
-設定ファイル（`.github/config/repositories.yml`）を編集してコミット・プッシュすると、`UpdateRepositoryOptions.yml`が自動実行され、`AddNewVersion.yml`のリポジトリ選択肢が自動更新されます。
+```bash
+git add .github/config/repositories.yml
+git commit -m "Update repository configuration"
+git push origin main
+```
 
-**初期状態では**`AddNewVersion.yml`に`placeholder-package`が設定されていますが、設定ファイルを編集すると実際のパッケージ名に自動更新されます。
+### 5. ワークフローオプションの自動更新
+
+設定ファイルをコミット・プッシュすると、`UpdateRepositoryOptions.yml`が自動実行され、`AddNewVersion.yml`のリポジトリ選択肢が自動更新されます。
+
+- **初期状態**: `AddNewVersion.yml`に`placeholder-package`が設定されています
+- **自動更新後**: 実際のパッケージ名に更新されます
+- **確認方法**: GitHub Actionsタブで実行状況を確認
 
 これだけで準備完了！新しいパッケージは自動的に追加されます。
 
@@ -142,62 +159,9 @@ options:
   - `package.json`: Unity Package Manager用の設定ファイル
   - `[package-name]-[version].zip`: パッケージファイル
 
-## ライセンス
-
-MIT License
-
-## 貢献
-
-Issue や Pull Request を歓迎します！
-
-## フォーク後のセットアップ詳細
-
-### 完全なセットアップ例
-
-1. **リポジトリをフォーク**
-   - 右上の "Fork" ボタンをクリック
-
-2. **リポジトリをクローン**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/FORKED_REPO_NAME.git
-   cd FORKED_REPO_NAME
-   ```
-
-3. **設定ファイルを編集**
-   ```yaml
-   # .github/config/repositories.yml
-   default_owner: "your-actual-username"
-   
-   repositories:
-     - name: "your-real-package-1"
-     - name: "your-real-package-2"
-   
-   vpm_settings:
-     repo_url: "https://your-actual-username.github.io/FORKED_REPO_NAME/vpm.json"
-     name: "Your Actual VPM Repository Name"
-     description: "あなたの実際のパッケージリポジトリの説明"
-   ```
-
-4. **初期コミット**
-   ```bash
-   git add .github/config/repositories.yml
-   git commit -m "Update repository configuration"
-   git push origin main
-   ```
-
-5. **自動更新の確認**
-   - GitHub Actionsタブで `UpdateRepositoryOptions.yml` の実行を確認
-   - `AddNewVersion.yml` のオプションが更新されることを確認
-
-6. **GitHub Pages設定**
-   - Settings → Pages → Source を "GitHub Actions" に設定
-
-7. **初回パッケージ追加**
-   - Actions → "add-new-version" → "Run workflow"
-   - 更新されたリポジトリ選択肢から選択して実行
-
-### 注意事項
+## 注意事項とトラブルシューティング
 
 - **初期状態**: `AddNewVersion.yml`には`placeholder-package`が設定されています
 - **自動更新**: 設定ファイルを編集すると、実際のパッケージ名に自動更新されます
 - **権限**: GitHub Actionsがワークフローファイルを更新できるよう、適切な権限設定が必要です
+- **Pages設定**: GitHub Pagesが有効になっていないとvpm.jsonにアクセスできません
