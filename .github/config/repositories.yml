@@ -1,0 +1,28 @@
+# VPM Repository Configuration
+# このファイルで対象のリポジトリとオーナーを設定します
+
+# GitHubリポジトリオーナー（デフォルト）
+default_owner: "kurotori4423"
+
+# 管理対象のリポジトリリスト
+repositories:
+  - name: "TexTransTool"
+    owner: "ReinaS-64892"  # 特定のリポジトリで異なるオーナーを指定可能
+  - name: "TexTransCore"
+    owner: "ReinaS-64892"
+  - name: "TTT-DestructiveTextureUtilities"
+    owner: "ReinaS-64892"
+  - name: "TTT-WorldExtension"
+    owner: "ReinaS-64892"
+  - name: "ReinaS-lilToonNDMFUtility"
+    owner: "ReinaS-64892"
+  - name: "TTCE-Wgpu"
+    owner: "ReinaS-64892"
+
+# VPMリポジトリの設定
+vpm_settings:
+  repo_url: "https://vpm.kurotori4423.github.io/vpm.json"  # あなたのVPMリポジトリURL
+  name: "Kurotori4423 VPM Repository"
+  description: "VRChat用パッケージリポジトリ"
+  author_name: "kurotori4423"
+  author_url: "https://github.com/kurotori4423"
