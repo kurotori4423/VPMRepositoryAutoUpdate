@@ -9,7 +9,13 @@ GitHub Actionsを使用して、指定されたリポジトリのリリースか
 
 `Use this template`ボタンでこのリポジトリをテンプレートに新たなリポジトリを作成します。
 
-### 2. 設定ファイルの編集
+### 2. 権限の設定
+
+`Settings` > `Actions` > `General` の `Workflow permissions` を `Read and write permissions` に変更します。
+
+`Settings` > `Pages` から `Build and deployment` の `Branch` を `main` `/(root)` にします。
+ 
+### 3. 設定ファイルの編集
 
 `.github/config/repositories.yml`を編集：
 
@@ -29,13 +35,13 @@ vpm_settings:
   # author_url: "URL"   <-- この二つは指定しない場合は現在のリポジトリから自動で設定されます。
 ```
 
-### 3. GitHub Pagesの有効化
+### 4. GitHub Pagesの有効化
 
 1. リポジトリの Settings → Pages
 2. Source を "GitHub Actions" に設定
 3. vpm.jsonが`https://{Githubアカウント名}.github.io/{リポジトリ名}/vpm.json`でアクセス可能になります
 
-### 4. 設定をコミット・プッシュ
+### 5. 設定をコミット・プッシュ
 
 ```bash
 git add .github/config/repositories.yml
@@ -43,7 +49,7 @@ git commit -m "Update repository configuration"
 git push origin main
 ```
 
-### 5. ワークフローオプションの自動更新
+### 6. ワークフローオプションの自動更新
 
 設定ファイルをコミット・プッシュすると、`UpdateRepositoryOptions.yml`が自動実行され、`AddNewVersion.yml`のリポジトリ選択肢が自動更新されます。
 
@@ -53,7 +59,7 @@ git push origin main
 
 これだけで準備完了！新しいパッケージは自動的に追加されます。
 
-### 6. パッケージリポジトリでのディスパッチワークフロー設定（オプション）
+### 7. パッケージリポジトリでのディスパッチワークフロー設定（オプション）
 
 パッケージのリリース時に自動的にVPMリポジトリに追加したい場合は、以下のテンプレートリポジトリからディスパッチワークフローを設定できます：
 
