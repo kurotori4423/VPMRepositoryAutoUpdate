@@ -1,9 +1,6 @@
 # VPM Repository Configuration
 # このファイルで対象のリポジトリとオーナーを設定します
 
-# デフォルトのリポジトリオーナー
-default_owner: "your-github-username"
-
 # 管理対象のリポジトリリスト
 repositories:
   - name: "your-package-1"
@@ -12,8 +9,7 @@ repositories:
 
 # VPMリポジトリの設定
 vpm_settings:
-  repo_url: "https://your-username.github.io/your-repo-name/vpm.json"
   name: "Your VPM Repository"
   description: "あなたのVRChat用パッケージリポジトリ"
-  author_name: "your-username"
-  author_url: "https://github.com/your-username"
+  # author_name: "作者名"
+  # author_url: "URL"   <-- この二つは指定しない場合は現在のリポジトリから自動で設定されます。

@@ -21,12 +21,11 @@ export function getRepositoryOwner(repositoryName) {
         }
         
         // 見つからない場合はデフォルトオーナーを返す
-        return config.default_owner || process.env.DEFAULT_REPO_OWNER || 'kurotori4423';
-        
+        return process.env.DEFAULT_REPO_OWNER;
     } catch (error) {
         console.error('設定ファイルの読み込みに失敗しました:', error);
         // フォールバック: 環境変数またはデフォルト値
-        return process.env.DEFAULT_REPO_OWNER || 'kurotori4423';
+        return process.env.DEFAULT_REPO_OWNER;
     }
 }
 
@@ -40,18 +39,23 @@ export function getVpmSettings() {
         const configContent = fs.readFileSync(configPath, 'utf8');
         const config = yaml.load(configContent);
         
-        return config.vpm_settings || {
-            repo_url: 'https://vpm.kurotori4423.github.io/vpm.json',
-            name: 'Kurotori4423 VPM Repository',
-            description: 'VRChat用パッケージリポジトリ'
+        // GitHub Pages URLを自動生成
+        const repoUrl = generateGitHubPagesUrl();
+        
+        return {
+            ...config.vpm_settings,
+            repo_url: repoUrl
         };
         
     } catch (error) {
         console.error('VPM設定の読み込みに失敗しました:', error);
+        // フォールバック: GitHub環境変数から自動生成
         return {
-            repo_url: 'https://vpm.kurotori4423.github.io/vpm.json',
-            name: 'Kurotori4423 VPM Repository', 
-            description: 'VRChat用パッケージリポジトリ'
+            repo_url: generateGitHubPagesUrl(),
+            name: `${process.env.GITHUB_REPOSITORY_OWNER || 'VPM'} Repository`, 
+            description: 'VRChat用パッケージリポジトリ',
+            author_name: process.env.GITHUB_REPOSITORY_OWNER || 'Repository Owner',
+            author_url: `https://github.com/${process.env.GITHUB_REPOSITORY_OWNER || ''}`
         };
     }
 }
@@ -93,6 +97,25 @@ export function initializeVpmRepo(existingVpmJson = {}) {
         },
         packages: existingVpmJson.packages || {}
     };
+}
+
+/**
+ * GitHub Pagesを使用したVPMリポジトリURLを自動生成する
+ * @returns {string} GitHub Pages上のvpm.jsonのURL
+ */
+function generateGitHubPagesUrl() {
+    const owner = process.env.GITHUB_REPOSITORY_OWNER;
+    const repo = process.env.GITHUB_REPOSITORY;
+    
+    if (!owner || !repo) {
+        console.warn('GitHub環境変数が見つかりません。デフォルトURLを使用します。');
+        return 'https://your-username.github.io/your-repo-name/vpm.json';
+    }
+    
+    // リポジトリ名からオーナー部分を除去（owner/repo形式の場合）
+    const repoName = repo.includes('/') ? repo.split('/')[1] : repo;
+    
+    return `https://${owner}.github.io/${repoName}/vpm.json`;
 }
 
 /**

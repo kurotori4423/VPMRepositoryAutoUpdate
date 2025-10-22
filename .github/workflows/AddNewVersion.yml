@@ -21,10 +21,8 @@ on:
       repository:
         description: 'repository choice'
         required: true
+        type: string        
         default: 'placeholder-package'
-        type: choice
-        options:
-          - placeholder-package  # この値は repositories.yml 設定後に自動更新されます
       tag:
         type: string
         required: true
@@ -36,7 +34,7 @@ on:
         default: ''
 
 env:
-  DEFAULT_REPO_OWNER: 'your-github-username'
+  DEFAULT_REPO_OWNER: ${{ github.repository_owner }}
 
 jobs:
   add-new-version:
@@ -128,6 +126,11 @@ jobs:
           ORIGINAL_VPM: ${{ steps.VPMRepoJson.outputs.result }}
           INITIALIZED_VPM: ${{ steps.InitializedVPMJson.outputs.result }}
         run: |
+          echo "=== Generated GitHub Pages URL ==="
+          echo "Owner: ${{ github.repository_owner }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Expected VPM URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/vpm.json"
+          echo ""
           echo "=== Original vpm.json ==="
           echo "$ORIGINAL_VPM" | head -20
           echo ""

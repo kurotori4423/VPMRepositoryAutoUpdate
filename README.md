@@ -2,51 +2,38 @@
 
 ReinaS-64892氏のリポジトリからフォークして作成した、VRChatのパッケージ管理システム（VPM）用の自動更新システムです。
 GitHub Actionsを使用して、指定されたリポジトリのリリースから自動的にvpm.jsonを更新します。
-
-## 特徴
-
-- 🔧 **汎用的な設定**: 設定ファイルによる柔軟なリポジトリ管理
-- 🚀 **自動化**: GitHubリリースの検出と自動更新
-- 🌐 **Repository Dispatch**: 外部からのAPI呼び出しに対応
-- 📦 **複数パッケージ対応**: 複数のパッケージを一つのVPMリポジトリで管理
-- ✨ **自動パッケージ登録**: 新しいパッケージを事前設定なしで自動追加
-- 🏗️ **ゼロ設定開始**: 空のvpm.jsonから開始可能
-- 🔗 **ディスパッチワークフロー**: パッケージリリース時の自動連携テンプレート提供
-
+管理するパッケージは[VPMUnityPackageWorkflow](https://github.com/kurotori4423/VPMUnityPackageWorkflow)で管理されている物を設定できます。
 ## セットアップ
 
-### 1. リポジトリをフォーク/クローン
+### 1. テンプレートからリポジトリを作成
 
-- 右上の "Fork" ボタンをクリック
-- フォークしたリポジトリをローカルにクローン：
-  ```bash
-  git clone https://github.com/YOUR_USERNAME/FORKED_REPO_NAME.git
-  cd FORKED_REPO_NAME
-  ```
+`Use this template`ボタンでこのリポジトリをテンプレートに新たなリポジトリを作成します。
 
 ### 2. 設定ファイルの編集
 
 `.github/config/repositories.yml`を編集：
 
-```yaml
-default_owner: "your-github-username"
+管理したいリポジトリを`repositories`に追加してください。
 
+```yaml
 repositories:
   - name: "your-package-1"
     owner: "package-owner"  # 異なる場合のみ指定
   - name: "your-package-2"
 
+# VPMリポジトリの設定
 vpm_settings:
-  repo_url: "https://your-username.github.io/your-repo-name/vpm.json"
-  name: "Your VPM Repository"
-  description: "あなたのVRChat用パッケージリポジトリ"
+  name: "Your VPM Repository" # VPMリポジトリの名前
+  description: "あなたのVRChat用パッケージリポジトリ" # VPMリポジトリの設定
+  # author_name: "作者名"
+  # author_url: "URL"   <-- この二つは指定しない場合は現在のリポジトリから自動で設定されます。
 ```
 
 ### 3. GitHub Pagesの有効化
 
 1. リポジトリの Settings → Pages
 2. Source を "GitHub Actions" に設定
-3. vpm.jsonが`https://your-username.github.io/your-repo-name/vpm.json`でアクセス可能になります
+3. vpm.jsonが`https://{Githubアカウント名}.github.io/{リポジトリ名}/vpm.json`でアクセス可能になります
 
 ### 4. 設定をコミット・プッシュ
 
@@ -66,24 +53,7 @@ git push origin main
 
 これだけで準備完了！新しいパッケージは自動的に追加されます。
 
-### 6. add-repo.htmlの更新
-
-VRChat Creator Companion (VCC) でワンクリックリポジトリ追加を可能にするため、`add-repo.html`のURLを更新：
-
-```html
-<!-- 変更前 -->
-<meta http-equiv="refresh" content="0;URL='vcc://vpm/addRepo?url=https%3A%2F%2Fyour-username.github.io%2Fyour-repo-name%2Fvpm.json'" />
-
-<!-- 変更後（実際のURLに置き換え） -->
-<meta http-equiv="refresh" content="0;URL='vcc://vpm/addRepo?url=https%3A%2F%2Factual-username.github.io%2Factual-repo-name%2Fvpm.json'" />
-```
-
-同様にリトライリンクも更新してください：
-```html
-<a href="vcc://vpm/addRepo?url=https%3A%2F%2Factual-username.github.io%2Factual-repo-name%2Fvpm.json">リトライ</a>
-```
-
-### 7. パッケージリポジトリでのディスパッチワークフロー設定（オプション）
+### 6. パッケージリポジトリでのディスパッチワークフロー設定（オプション）
 
 パッケージのリリース時に自動的にVPMリポジトリに追加したい場合は、以下のテンプレートリポジトリからディスパッチワークフローを設定できます：
 
@@ -151,13 +121,15 @@ VRChatプロジェクトで以下のURLをVPMリポジトリとして追加：
 https://your-username.github.io/your-repo-name/vpm.json
 ```
 
+**注意**: URLは自動生成されますが、実際のリポジトリ名に合わせて上記のプレースホルダーを置き換えてください。
+
 ## ワークフローの説明
 
 - **AddNewVersion.yml**: メインのパッケージ追加ワークフロー
 - **AddNewVersionFromReposDispatch.yml**: Repository Dispatch イベント用
-- **UpdateRepositoryOptions.yml**: 設定ファイル変更時の自動ワークフロー更新
+- **UpdateRepositoryConfiguration.yml**: 設定ファイル変更時の自動ワークフロー・HTML更新
 
-### UpdateRepositoryOptions.ymlの動作
+### UpdateRepositoryConfiguration.ymlの動作
 
 このワークフローは以下のタイミングで自動実行されます：
 
@@ -167,6 +139,7 @@ https://your-username.github.io/your-repo-name/vpm.json
 **実行内容：**
 - 設定ファイルからリポジトリリストを読み込み
 - `AddNewVersion.yml`の`options`セクションを自動更新
+- `add-repo.html`のURLを現在のGitHub Pagesに合わせて自動更新
 - 変更があれば自動コミット・プッシュ
 
 **例：**
@@ -202,4 +175,4 @@ options:
 - **自動更新**: 設定ファイルを編集すると、実際のパッケージ名に自動更新されます
 - **権限**: GitHub Actionsがワークフローファイルを更新できるよう、適切な権限設定が必要です
 - **Pages設定**: GitHub Pagesが有効になっていないとvpm.jsonにアクセスできません
-- **add-repo.html**: フォーク後は`add-repo.html`のURLを実際のGitHub PagesのURLに変更してください
+- **自動更新**: `add-repo.html`とワークフローのオプションは設定ファイル更新時に自動更新されます
