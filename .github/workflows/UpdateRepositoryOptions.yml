@@ -35,13 +35,14 @@ jobs:
           python3 << 'EOF'
           import re
           import sys
+          import os
           
           # Read the workflow file
           with open('.github/workflows/AddNewVersion.yml', 'r') as f:
               content = f.read()
           
-          # Get the new options from environment
-          new_options = "${{ steps.GetOptions.outputs.result }}"
+          # Get the new options from environment variable (safer than direct substitution)
+          new_options = os.environ.get('REPO_OPTIONS', '')
           formatted_options = "          - " + new_options.replace('\n          - ', '\n          - ')
           
           # Replace the options section
@@ -55,6 +56,7 @@ jobs:
               f.write(updated_content)
           
           print("AddNewVersion.yml has been updated successfully!")
+          print(f"Updated with options: {new_options}")
           EOF
 
       - name: Update add-repo.html
