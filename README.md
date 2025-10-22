@@ -1,8 +1,8 @@
 # VPM Repository Auto-Update
 
 ReinaS-64892氏のリポジトリからフォークして作成した、VRChatのパッケージ管理システム（VPM）用の自動更新システムです。
-GitHub Actionsを使用して、指定されたリポジトリのリリースから自動的にvpm.jsonを更新します。
-管理するパッケージは[VPMUnityPackageWorkflow](https://github.com/kurotori4423/VPMUnityPackageWorkflow)で管理されている物を設定できます。
+GitHub Actionsを使用して、パッケージリポジトリから`workflow_call`で呼び出されることで自動的にvpm.jsonを更新します。
+パッケージ作者は[VPMUnityPackageWorkflow](https://github.com/kurotori4423/VPMUnityPackageWorkflow)テンプレートを使用して簡単にVPMリポジトリに登録できます。
 ## セットアップ
 
 ### 1. テンプレートからリポジトリを作成
@@ -15,25 +15,20 @@ GitHub Actionsを使用して、指定されたリポジトリのリリースか
 
 `Settings` > `Pages` から `Build and deployment` の `Branch` を `main` `/(root)` にします。
  
-### 3. 設定ファイルの編集
+### 3. 設定ファイルの編集（オプション）
 
-`.github/config/repositories.yml`を編集：
-
-管理したいリポジトリを`repositories`に追加してください。
+`.github/config/repositories.yml`を編集してVPMリポジトリの基本情報をカスタマイズできます：
 
 ```yaml
-repositories:
-  - name: "your-package-1"
-    owner: "package-owner"  # 異なる場合のみ指定
-  - name: "your-package-2"
-
 # VPMリポジトリの設定
 vpm_settings:
   name: "Your VPM Repository" # VPMリポジトリの名前
-  description: "あなたのVRChat用パッケージリポジトリ" # VPMリポジトリの設定
-  # author_name: "作者名"
-  # author_url: "URL"   <-- この二つは指定しない場合は現在のリポジトリから自動で設定されます。
+  description: "あなたのVRChat用パッケージリポジトリ" # VPMリポジトリの説明
+  # author_name: "作者名"      # 省略時は自動設定
+  # author_url: "URL"         # 省略時は自動設定
 ```
+
+パッケージは各リポジトリから`workflow_call`で動的に登録されます。
 
 ### 4. GitHub Pagesの有効化
 
@@ -41,81 +36,66 @@ vpm_settings:
 2. Source を "GitHub Actions" に設定
 3. vpm.jsonが`https://{Githubアカウント名}.github.io/{リポジトリ名}/vpm.json`でアクセス可能になります
 
-### 5. 設定をコミット・プッシュ
+### 5. 設定をコミット・プッシュ（設定を変更した場合）
 
 ```bash
 git add .github/config/repositories.yml
-git commit -m "Update repository configuration"
+git commit -m "Update VPM repository settings"
 git push origin main
 ```
 
-### 6. ワークフローオプションの自動更新
+これで準備完了！パッケージは各リポジトリから`workflow_call`で動的に登録されます。
 
-設定ファイルをコミット・プッシュすると、`UpdateRepositoryOptions.yml`が自動実行され、`AddNewVersion.yml`のリポジトリ選択肢が自動更新されます。
+### 6. パッケージリポジトリでのワークフロー設定
 
-- **初期状態**: `AddNewVersion.yml`に`placeholder-package`が設定されています
-- **自動更新後**: 実際のパッケージ名に更新されます
-- **確認方法**: GitHub Actionsタブで実行状況を確認
-
-これだけで準備完了！新しいパッケージは自動的に追加されます。
-
-### 7. パッケージリポジトリでのディスパッチワークフロー設定（オプション）
-
-パッケージのリリース時に自動的にVPMリポジトリに追加したい場合は、以下のテンプレートリポジトリからディスパッチワークフローを設定できます：
+パッケージのリリース時に自動的にVPMリポジトリに追加するには、パッケージリポジトリに以下のワークフローを設定します：
 
 **VPMUnityPackageWorkflow**: https://github.com/kurotori4423/VPMUnityPackageWorkflow
 
-このテンプレートを使用すると、パッケージをリリースした際に自動的にこのVPMリポジトリに通知が送信され、パッケージが追加されます。
+このテンプレートを使用すると、パッケージをリリースした際に自動的にこのVPMリポジトリの`workflow_call`が呼び出され、パッケージが追加されます。
 
 ## 使用方法
 
-### 新しいパッケージの追加手順
+### パッケージの追加方法
 
-#### 1. 設定ファイルに追加（推奨）
+#### 1. 自動追加（推奨）
 
-`.github/config/repositories.yml`を編集：
-
-```yaml
-repositories:
-  - name: "existing-package-1"
-  - name: "existing-package-2"
-  - name: "new-package"  # 新しく追加
-```
-
-コミット・プッシュすると、`AddNewVersion.yml`のオプションが自動更新されます。
+パッケージリポジトリに[VPMUnityPackageWorkflow](https://github.com/kurotori4423/VPMUnityPackageWorkflow)テンプレートを設定することで、リリース時に自動的にVPMリポジトリに追加されます。
 
 #### 2. 手動実行
 
 1. GitHub Actionsタブに移動
 2. "add-new-version"ワークフローを選択
 3. "Run workflow"をクリック
-4. 更新されたリポジトリ選択肢からパッケージを選択
-5. タグを入力して実行
+4. 以下の情報を入力：
+   - **repository**: パッケージのリポジトリ名
+   - **tag**: バージョンタグ（例：v1.0.0）
+   - **owner**: リポジトリオーナー名（必須）
+5. 実行
 
-### API経由での実行
+### workflow_call経由での実行（パッケージリポジトリから）
 
-```bash
-curl -X POST \
-  -H "Accept: application/vnd.github.v3+json" \
-  -H "Authorization: token YOUR_GITHUB_TOKEN" \
-  https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/dispatches \
-  -d '{
-    "event_type": "add_new_version",
-    "client_payload": {
-      "repository": "PACKAGE_NAME",
-      "tag": "v1.0.0"
-    }
-  }'
+パッケージリポジトリのワークフローファイルに以下を追加：
+
+```yaml
+jobs:
+  update-vpm:
+    uses: kurotori4423/VPMRepositoryAutoUpdate/.github/workflows/AddNewVersion.yml@main
+    with:
+      repository: ${{ github.event.repository.name }}
+      tag: ${{ github.ref_name }}
+      owner: ${{ github.repository_owner }}
 ```
 
-### 自動連携（ディスパッチワークフロー）
+### 自動連携（workflow_call）
 
 パッケージのリポジトリに以下のテンプレートワークフローを設定することで、リリース時に自動的にVPMリポジトリに追加できます：
 
 **VPMUnityPackageWorkflow**: https://github.com/kurotori4423/VPMUnityPackageWorkflow
 
 このテンプレートを使用すると：
-- パッケージをリリースした際に自動でRepository Dispatchが送信される
+- パッケージをリリースした際に自動で`workflow_call`が実行される
+- リポジトリ情報（名前、オーナー、タグ）が自動的に渡される
 - 手動でVPMリポジトリを更新する必要がなくなる
 - リリースワークフローに組み込んで完全自動化が可能
 
@@ -131,39 +111,25 @@ https://your-username.github.io/your-repo-name/vpm.json
 
 ## ワークフローの説明
 
-- **AddNewVersion.yml**: メインのパッケージ追加ワークフロー
-- **AddNewVersionFromReposDispatch.yml**: Repository Dispatch イベント用
-- **UpdateRepositoryConfiguration.yml**: 設定ファイル変更時の自動ワークフロー・HTML更新
+- **AddNewVersion.yml**: メインのパッケージ追加ワークフロー（workflow_callとworkflow_dispatch対応）
 
-### UpdateRepositoryConfiguration.ymlの動作
+### AddNewVersion.ymlの動作
 
-このワークフローは以下のタイミングで自動実行されます：
+このワークフローは以下の2つの方法で実行できます：
 
-1. **手動実行**: GitHub ActionsタブからWorkflowを手動実行
-2. **自動実行**: `.github/config/repositories.yml`をコミット・プッシュした時
+1. **workflow_call**: パッケージリポジトリから呼び出される（推奨）
+2. **workflow_dispatch**: GitHub ActionsタブからUIで手動実行
+
+**必須パラメータ：**
+- `repository`: パッケージのリポジトリ名
+- `tag`: バージョンタグ（例：v1.0.0）
+- `owner`: リポジトリオーナー名（必須）
 
 **実行内容：**
-- 設定ファイルからリポジトリリストを読み込み
-- `AddNewVersion.yml`の`options`セクションを自動更新
-- `add-repo.html`のURLを現在のGitHub Pagesに合わせて自動更新
-- 変更があれば自動コミット・プッシュ
-
-**例：**
-```yaml
-# repositories.yml に以下を設定
-repositories:
-  - name: "MyPackage1" 
-  - name: "MyPackage2"
-```
-
-↓ 自動更新後
-
-```yaml
-# AddNewVersion.yml の options が以下に更新される
-options:
-  - MyPackage1
-  - MyPackage2
-```
+- 指定されたリポジトリのリリース情報を取得
+- package.jsonとZIPファイルをダウンロード
+- vpm.jsonを更新してコミット・プッシュ
+- GitHub Pagesで新しいパッケージが利用可能になる
 
 ## カスタマイズ
 
@@ -177,8 +143,8 @@ options:
 
 ## 注意事項とトラブルシューティング
 
-- **初期状態**: `AddNewVersion.yml`には`placeholder-package`が設定されています
-- **自動更新**: 設定ファイルを編集すると、実際のパッケージ名に自動更新されます
-- **権限**: GitHub Actionsがワークフローファイルを更新できるよう、適切な権限設定が必要です
+- **オーナー指定**: `owner`パラメータは必須です。パッケージリポジトリから呼び出す場合は`${{ github.repository_owner }}`を使用してください
+- **権限設定**: GitHub Actionsの`Read and write permissions`が必要です
 - **Pages設定**: GitHub Pagesが有効になっていないとvpm.jsonにアクセスできません
-- **自動更新**: `add-repo.html`とワークフローのオプションは設定ファイル更新時に自動更新されます
+- **リポジトリの存在**: 指定されたリポジトリとタグが存在しない場合、ワークフローは失敗します
+- **パッケージ形式**: リリースにpackage.jsonとZIPファイルが含まれている必要があります

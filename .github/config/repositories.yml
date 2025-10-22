@@ -1,15 +1,6 @@
-# VPM Repository Configuration
-# このファイルで対象のリポジトリとオーナーを設定します
-
-# 管理対象のリポジトリリスト
-repositories:
-  - name: "your-package-3"
-    owner: "package-owner"  # 異なる場合のみ指定
-  - name: "your-package-2"
-
 # VPMリポジトリの設定
 vpm_settings:
   name: "Your VPM Repository"
   description: "あなたのVRChat用パッケージリポジトリ"
-  # author_name: "作者名"
-  # author_url: "URL"   <-- この二つは指定しない場合は現在のリポジトリから自動で設定されます。
+  # author_name: "作者名"      # 省略時は自動設定
+  # author_url: "URL"         # 省略時は自動設定

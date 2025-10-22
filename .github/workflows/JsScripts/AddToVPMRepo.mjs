@@ -1,7 +1,7 @@
-import { initializeVpmRepo, enrichPackageMetadata, getRepositoryOwner } from './ConfigHelper.mjs';
+import { initializeVpmRepo, enrichPackageMetadata } from './ConfigHelper.mjs';
 
 export function Func() {
-    const { VPMRepoJson, AddPackageJson, RepositoryName } = process.env
+    const { VPMRepoJson, AddPackageJson, RepositoryOwner } = process.env
 
     let jsonObj = JSON.parse(VPMRepoJson);
     let addJsonObj = JSON.parse(AddPackageJson);
@@ -10,7 +10,7 @@ export function Func() {
     jsonObj = initializeVpmRepo(jsonObj);
     
     // パッケージのメタデータを補完
-    addJsonObj = enrichPackageMetadata(addJsonObj, RepositoryName || 'unknown');
+    addJsonObj = enrichPackageMetadata(addJsonObj, RepositoryOwner || 'unknown');
 
     // パッケージが存在しない場合は新規作成
     if (!jsonObj.packages[addJsonObj.name]) {

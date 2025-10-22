@@ -13,9 +13,8 @@ on:
         description: 'version tag string'
       owner:
         type: string
-        required: false
-        description: 'repository owner (optional, will use config if not provided)'
-        default: ''
+        required: true
+        description: 'repository owner'
   workflow_dispatch:
     inputs:
       repository:
@@ -29,9 +28,8 @@ on:
         description: 'version tag string'
       owner:
         type: string
-        required: false
-        description: 'repository owner (optional, will use config if not provided)'
-        default: ''
+        required: true
+        description: 'repository owner'
 
 env:
   DEFAULT_REPO_OWNER: ${{ github.repository_owner }}
@@ -50,20 +48,12 @@ jobs:
         id: GetOwner
         uses: actions/github-script@v7
         env:
-          REPOSITORY: ${{ inputs.repository }}
           PROVIDED_OWNER: ${{ inputs.owner }}
         with:
           result-encoding: string
           script: |
-            const mod = await import("${{ github.workspace }}/.github/workflows/JsScripts/ConfigHelper.mjs");
-            
-            // 明示的にオーナーが指定された場合はそれを使用
-            if (process.env.PROVIDED_OWNER && process.env.PROVIDED_OWNER.trim() !== '') {
-              return process.env.PROVIDED_OWNER.trim();
-            }
-            
-            // 設定ファイルからオーナーを取得
-            return mod.getRepositoryOwner(process.env.REPOSITORY);
+            // オーナーは必須なので直接返す
+            return process.env.PROVIDED_OWNER.trim();
 
       - name: MoveToVar
         id: VPMRepoJson
@@ -176,7 +166,7 @@ jobs:
         env:
           VPMRepoJson: ${{ steps.InitializedVPMJson.outputs.result }}
           AddPackageJson: ${{ steps.ReplacedPackageJson.outputs.result }}
-          RepositoryName: ${{ inputs.repository }}
+          RepositoryOwner: ${{ steps.GetOwner.outputs.result }}
         with:
           result-encoding: string
           script: |

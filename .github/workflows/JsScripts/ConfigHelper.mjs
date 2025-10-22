@@ -3,33 +3,6 @@ import * as path from 'path';
 import * as yaml from 'js-yaml';
 
 /**
- * 設定ファイルから指定されたリポジトリのオーナーを取得する
- * @param {string} repositoryName - リポジトリ名
- * @returns {string} オーナー名
- */
-export function getRepositoryOwner(repositoryName) {
-    try {
-        const configPath = path.join(process.env.GITHUB_WORKSPACE, '.github', 'config', 'repositories.yml');
-        const configContent = fs.readFileSync(configPath, 'utf8');
-        const config = yaml.load(configContent);
-        
-        // 指定されたリポジトリを検索
-        const repo = config.repositories.find(r => r.name === repositoryName);
-        
-        if (repo && repo.owner) {
-            return repo.owner;
-        }
-        
-        // 見つからない場合はデフォルトオーナーを返す
-        return process.env.DEFAULT_REPO_OWNER;
-    } catch (error) {
-        console.error('設定ファイルの読み込みに失敗しました:', error);
-        // フォールバック: 環境変数またはデフォルト値
-        return process.env.DEFAULT_REPO_OWNER;
-    }
-}
-
-/**
  * VPM設定を取得する
  * @returns {object} VPM設定オブジェクト
  */
@@ -57,24 +30,6 @@ export function getVpmSettings() {
             author_name: process.env.GITHUB_REPOSITORY_OWNER || 'Repository Owner',
             author_url: `https://github.com/${process.env.GITHUB_REPOSITORY_OWNER || ''}`
         };
-    }
-}
-
-/**
- * 利用可能なリポジトリリストを取得する
- * @returns {Array} リポジトリ名の配列
- */
-export function getAvailableRepositories() {
-    try {
-        const configPath = path.join(process.env.GITHUB_WORKSPACE, '.github', 'config', 'repositories.yml');
-        const configContent = fs.readFileSync(configPath, 'utf8');
-        const config = yaml.load(configContent);
-        
-        return config.repositories.map(repo => repo.name);
-        
-    } catch (error) {
-        console.error('リポジトリリストの読み込みに失敗しました:', error);
-        return ['TexTransTool', 'TexTransCore']; // フォールバック
     }
 }
 
@@ -138,10 +93,10 @@ function generateRepoId(repoUrl) {
 /**
  * パッケージの基本メタデータを補完する
  * @param {object} packageJson - パッケージのJSON
- * @param {string} repositoryName - リポジトリ名
+ * @param {string} owner - リポジトリオーナー
  * @returns {object} 補完されたパッケージJSON
  */
-export function enrichPackageMetadata(packageJson, repositoryName) {
+export function enrichPackageMetadata(packageJson, owner) {
     const vpmSettings = getVpmSettings();
     
     // 基本情報の補完
@@ -151,7 +106,6 @@ export function enrichPackageMetadata(packageJson, repositoryName) {
     
     // GitHubリンクの生成（authorが設定されていない場合）
     if (!packageJson.author || !packageJson.author.url) {
-        const owner = getRepositoryOwner(repositoryName);
         packageJson.author = packageJson.author || {};
         if (!packageJson.author.url) {
             packageJson.author.url = `https://github.com/${owner}`;
