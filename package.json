@@ -1,9 +1,0 @@
-{
-  "name": "vpm-repository-system",
-  "version": "1.0.0",
-  "description": "VPM Repository Auto-Update System",
-  "dependencies": {
-    "js-yaml": "^4.1.0"
-  },
-  "type": "module"
-}
