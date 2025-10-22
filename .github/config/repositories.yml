@@ -3,7 +3,7 @@
 
 # 管理対象のリポジトリリスト
 repositories:
-  - name: "your-package-1"
+  - name: "your-package-3"
     owner: "package-owner"  # 異なる場合のみ指定
   - name: "your-package-2"
 
