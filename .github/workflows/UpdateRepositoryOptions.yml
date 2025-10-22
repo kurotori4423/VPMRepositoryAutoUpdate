@@ -17,48 +17,6 @@ jobs:
           npm install js-yaml
           pip install pyyaml
 
-      - name: Get Repository Options
-        id: GetOptions
-        uses: actions/github-script@v7
-        with:
-          result-encoding: string
-          script: |
-            const mod = await import("${{ github.workspace }}/.github/workflows/JsScripts/GetRepositoryOptions.mjs");
-            const repositories = mod.getRepositoryOptions();
-            return repositories.join('\n          - ');
-
-      - name: Update AddNewVersion.yml
-        env:
-          REPO_OPTIONS: ${{ steps.GetOptions.outputs.result }}
-        run: |
-          # Python script to update the workflow file
-          python3 << 'EOF'
-          import re
-          import sys
-          import os
-          
-          # Read the workflow file
-          with open('.github/workflows/AddNewVersion.yml', 'r') as f:
-              content = f.read()
-          
-          # Get the new options from environment variable (safer than direct substitution)
-          new_options = os.environ.get('REPO_OPTIONS', '')
-          formatted_options = "          - " + new_options.replace('\n          - ', '\n          - ')
-          
-          # Replace the options section
-          pattern = r'(options:\s*\n)((?:\s*-\s*[^\n]+\n?)*)'
-          replacement = f'\\1{formatted_options}\n'
-          
-          updated_content = re.sub(pattern, replacement, content)
-          
-          # Write back the file
-          with open('.github/workflows/AddNewVersion.yml', 'w') as f:
-              f.write(updated_content)
-          
-          print("AddNewVersion.yml has been updated successfully!")
-          print(f"Updated with options: {new_options}")
-          EOF
-
       - name: Update add-repo.html
         id: UpdateAddRepoHtml
         uses: actions/github-script@v7
